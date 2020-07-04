@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.OverScroller;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +16,11 @@ import org.schabi.newpipe.R;
 
 import java.lang.reflect.Field;
 
-// check this https://stackoverflow.com/questions/56849221/recyclerview-fling-causes-laggy-while-appbarlayout-is-scrolling/57997489#57997489
+// See https://stackoverflow.com/questions/56849221#57997489
 public final class FlingBehavior extends AppBarLayout.Behavior {
+    private final Rect focusScrollRect = new Rect();
 
-    public FlingBehavior(Context context, AttributeSet attrs) {
+    public FlingBehavior(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -59,7 +61,8 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
     @Nullable
     private OverScroller getScrollerField() {
         try {
-            Class<?> headerBehaviorType = this.getClass().getSuperclass().getSuperclass().getSuperclass();
+            Class<?> headerBehaviorType = this.getClass()
+                    .getSuperclass().getSuperclass().getSuperclass();
             if (headerBehaviorType != null) {
                 Field field = headerBehaviorType.getDeclaredField("scroller");
                 field.setAccessible(true);
@@ -86,12 +89,14 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
         return null;
     }
 
-    private void resetNestedScrollingChild(){
+    private void resetNestedScrollingChild() {
         Field field = getLastNestedScrollingChildRefField();
-        if(field != null){
+        if (field != null) {
             try {
                 Object value = field.get(this);
-                if(value != null) field.set(this, null);
+                if (value != null) {
+                    field.set(this, null);
+                }
             } catch (IllegalAccessException e) {
                 // ?
             }
@@ -100,7 +105,8 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
 
     private void stopAppBarLayoutFling() {
         OverScroller scroller = getScrollerField();
-        if (scroller != null) scroller.forceFinished(true);
+        if (scroller != null) {
+            scroller.forceFinished(true);
+        }
     }
-
 }

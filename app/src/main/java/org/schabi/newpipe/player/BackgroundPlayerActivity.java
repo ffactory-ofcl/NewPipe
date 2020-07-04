@@ -49,7 +49,7 @@ public final class BackgroundPlayerActivity extends ServicePlayerActivity {
     }
 
     @Override
-    public boolean onPlayerOptionSelected(MenuItem item) {
+    public boolean onPlayerOptionSelected(final MenuItem item) {
         if (item.getItemId() == R.id.action_switch_popup) {
 
             if (!PermissionHelper.isPopupEnabled(this)) {
